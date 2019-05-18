@@ -9,31 +9,44 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
 import javax.naming.InitialContext;
 
-public class TestProdutorTopico {
-	
+public class TestConsumidorTopicoComercial {
+
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
 	
 		InitialContext context = new InitialContext();		
 		ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
+		
 		Connection connection= factory.createConnection();
-		connection.start();
+		connection.setClientID("comercial");
 		
-		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE); 		
-		Destination topico = (Destination) context.lookup("loja");
-		MessageProducer producer = session.createProducer(topico);
+		connection.start();		
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE); 	
 		
+		Topic topico = (Topic) context.lookup("loja");
 		
+		MessageConsumer consumer = session.createDurableSubscriber(topico, "assinatura");
+		
+		consumer.setMessageListener(new MessageListener() {
 			
-			Message message = session.createTextMessage("<pedido><id>104</id><ebook>false</ebbok></pedido>");
-			message.setBooleanProperty("ebook",false);
-			producer.send(message);
-	
+			@Override
+			public void onMessage(Message message) {
+				TextMessage textMessage = (TextMessage) message;
+				
+				try {
+					System.out.println(textMessage.getText());
+				} catch (JMSException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
 			
 		
 		

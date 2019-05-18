@@ -14,7 +14,7 @@ import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.naming.InitialContext;
 
-public class TestConsumidorTopico {
+public class TestConsumidorTopicoEstoque {
 
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
