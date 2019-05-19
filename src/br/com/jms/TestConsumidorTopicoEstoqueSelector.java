@@ -4,15 +4,16 @@ import java.util.Scanner;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.naming.InitialContext;
+
+import br.com.jms.modelo.Pedido;
 
 public class TestConsumidorTopicoEstoqueSelector {
 
@@ -36,16 +37,33 @@ public class TestConsumidorTopicoEstoqueSelector {
 			
 			@Override
 			public void onMessage(Message message) {
-				TextMessage textMessage = (TextMessage) message;
+				ObjectMessage objectMessage = (ObjectMessage) message;
 				
 				try {
-					System.out.println(textMessage.getText());
+					Pedido pedido = (Pedido) objectMessage.getObject();
+					System.out.println(pedido.toString());
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 			}
+			
+//	Quando utiliza texto e XML usa esta	
+			
+//			@Override
+//			public void onMessage(Message message) {
+//				TextMessage textMessage = (TextMessage) message;
+//				
+//				try {
+//					System.out.println(textMessage.getText());
+//				} catch (JMSException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				
+//			}
+	
 		});
 			
 		
